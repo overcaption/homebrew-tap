@@ -1,0 +1,32 @@
+# Bumps the cask to a published release of overcaption/overcaption: downloads
+# the dmg from the release, computes the checksum, rewrites version + sha256.
+# Run after mirror-release-assets has attached the installers.
+name: bump-cask
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.3.3)"
+        required: true
+permissions:
+  contents: write
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and sha256
+        run: |
+          set -euo pipefail
+          tag="${{ inputs.tag }}"
+          ver="${tag#v}"
+          url="https://github.com/overcaption/overcaption/releases/download/${tag}/Overcaption-${ver}-mac-arm64.dmg"
+          curl -fL --retry 3 -o app.dmg "$url"
+          sha=$(sha256sum app.dmg | cut -d' ' -f1)
+          sed -i -E "s/^  version \".+\"$/  version \"${ver}\"/" Casks/overcaption.rb
+          sed -i -E "s/^  sha256 \".+\"$/  sha256 \"${sha}\"/" Casks/overcaption.rb
+          git config user.name overcaption
+          git config user.email overcaption@gmail.com
+          git add Casks/overcaption.rb
+          git commit -m "overcaption ${ver}"
+          git push
