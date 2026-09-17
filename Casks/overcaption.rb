@@ -1,6 +1,6 @@
 cask "overcaption" do
-  version "0.4.4"
-  sha256 "79b2979a8f7cb4f295f155a1631f7f35f67e18274aa89d2cfffd8cc5011d6475"
+  version "0.4.5"
+  sha256 "9c96c988086637b873cc51e19900966730dec68091525341ebedd31417c7627d"
 
   url "https://github.com/overcaption/overcaption/releases/download/v#{version}/Overcaption-#{version}-mac-arm64.dmg"
   name "Overcaption"
